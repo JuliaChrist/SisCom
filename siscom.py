@@ -30,13 +30,6 @@ def sum_bytes(string): #soma o valor dos bytes da entrada
 
 
 def plotar(_list):
-	# _bin = []
-	# for num in _list:
-	# 	if num == 0:
-	# 		_bin.extend((0,0))
-	# 	else:
-	# 		_bin.extend((1,1))
-
 	prev = 0
 	graph = [] 
 	index = [0]
@@ -53,9 +46,6 @@ def plotar(_list):
 			index.extend((i,i))
 		else:
 			index.append(i)
-
-
-		# index.extend((i,i)) if i != len(_list) else index.append(i)
 		i +=1
 
 	plt.plot(index, graph)
@@ -70,35 +60,32 @@ in_list = []
 
 # while 1 :
 
+#Recebendo mensagem via terminal
 mensagem = input("Mensagem: ")
-
-
-#Transformando mensagem (binária) em lista de números inteiros para plotar.
-in_bin = toBinary(mensagem)
-print(type(in_bin))
-for i in range (len(in_bin)):
-	in_list.append(int(in_bin[i]))
+#Transformando mensagem (binária) em lista de números inteiros para plotar
+msg_bin = toBinary(mensagem)
+for i in range (len(msg_bin)):
+	in_list.append(int(msg_bin[i]))
 # print("deu? ",in_list)
 plotar(in_list)
 
-print("Entrada em binário: ",in_bin)
+print("Entrada em binário: ",msg_bin)
 print("Entrada em ASCII: ", toASCII_dec(mensagem))
 print("Soma ASCII: ", sum_bytes(mensagem))
-
-	#Envia a mensagem para a serial
+#Envia a mensagem para a serial
 print("N° de bytes enviados: ", USB.write(mensagem.encode()))
 
 print("________________________________________\n")
 
-	#lê a serial
+#lê a serial
 resposta = USB.readline().decode('ASCII').rstrip()
 
 print("Resposta: ", resposta)
 print("Resposta em Binário: ", toBinary(resposta))
 print("Soma ASCII: ", sum_bytes(resposta), "\n")
 
-	#mostra o valor em binário
-print("Soma Binário: ",format(sum_bytes(mensagem),'b'), "\n")
+#mostra o valor em binário
+# print("Soma Binário: ",format(sum_bytes(mensagem),'b'), "\n")
 
 if (checksum(sum_bytes(mensagem),sum_bytes(resposta))):
 	print("Checksum OK\n")
