@@ -101,5 +101,5 @@ else:
 
 USB.flush()
 plt.tight_layout()
-plt.show()
+# plt.show()
 
