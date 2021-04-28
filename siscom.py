@@ -71,12 +71,10 @@ USB = serial.Serial('/dev/ttyACM0', 9600)
 #Limpa o buffer
 USB.flush()
 
-
+#Recebendo mensagem via terminal
 mensagem = input("Mensagem: ")
 
 while(mensagem != "q"):
-#Recebendo mensagem via terminal
-	
 
 	in_list = String_to_Int_List(String_to_Binary(mensagem))
 	Plot_Graph(in_list, "msg")
@@ -86,6 +84,7 @@ while(mensagem != "q"):
 	# print("Entrada em ASCII: ", String_to_ASCII_Dec(mensagem))
 	# print("Soma ASCII: ", Sum_Bytes(mensagem))
 	#Envia a mensagem para a serial
+
 	USB.write(mensagem.encode())
 	# print("N° de bytes enviados: ", USB.write(mensagem.encode()))
 
