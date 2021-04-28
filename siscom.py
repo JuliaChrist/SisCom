@@ -27,16 +27,27 @@ def String_to_ASCII_Dec (string): #transforma a entrada em valores ASCII decimai
 	return "".join(f"{ord(i)}" for i in string)
 
 def checksum (sum_mensagem,sum_resposta):
+	# Independentemente da base numérica utilizada, as operações matemáticas aplicadas geram o mesmo resultado, portanto, a soma na base decimal resulta no mesmo 
+	# valor que a soma na base binária.
+	# Nessa aplicação, utilizamos a soma em decimal, pois é a base usada pela linguagem Python para as operações matemáticas.
 	if sum_mensagem == sum_resposta:
 		return 1
 	else:
 		return 0
 
 def Sum_Bytes (string): #soma o valor dos bytes da entrada
+# Independentemente da base numérica utilizada, as operações matemáticas aplicadas geram o mesmo resultado, portanto, a soma na base decimal resulta no mesmo 
+# valor que a soma na base binária.
+# Nessa aplicação, utilizamos a soma em decimal, pois é a base usada pela linguagem Python para as operações matemáticas.
 	soma = 0
 	for i in range (len(string)):
 		soma = soma + int(String_to_ASCII_Dec(string[i]))
 	return soma
+
+def Insert_Checksum(String):
+	mensagem = str(Sum_Bytes(mensagem))
+
+
 
 def Plot_Graph (_list, sig):
 	prev = 0
@@ -76,20 +87,35 @@ mensagem = input("Mensagem: ")
 
 while(mensagem != "q"):
 
-	in_list = String_to_Int_List(String_to_Binary(mensagem))
-	Plot_Graph(in_list, "msg")
-
 	print("Entrada (ASCII): ", mensagem)
 	print("Entrada (Binário): ",String_to_Binary(mensagem))
 	print("Entrada (Decimal): ", String_to_ASCII_Dec(mensagem))
 
+	# mensagem = Insert_Checksum(mensagem)
+
+	teste = chr(Sum_Bytes(mensagem))
+	print("Soma: ", Sum_Bytes(mensagem))
+
+	print("SomaASCII: ", teste)
+	mensagem += teste
+	print("CHECKSUM: ", mensagem)
+	print("CHECKSUM: ", String_to_Binary(mensagem))
+
+	in_list = String_to_Int_List(String_to_Binary(mensagem))
+	Plot_Graph(in_list, "msg")
+
+	# print("Soma char: ", teste.decode('ASCII'))
 	#Envia a mensagem para a serial
 	USB.write(mensagem.encode())
 
 	print("________________________________________\n")
 
 	#lê a serial
-	resposta = USB.readline().decode('ASCII').rstrip()
+
+	batata = USB.readline()#.decode('ASCII').rstrip()
+	resposta = str(batata , 'utf-8')
+	resposta = resposta.rstrip()
+	print(resposta)
 
 	out_list = String_to_Int_List(String_to_Binary(resposta))
 	Plot_Graph(out_list, "rsp")
