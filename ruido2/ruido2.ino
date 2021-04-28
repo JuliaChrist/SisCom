@@ -69,10 +69,10 @@ void loop() {
 
   //converter cada string em um vetor de int, converter cada vetor em seu valor decimal 
 
-//    int dec_values[n_bytes][8];
-//    for (int i = 0; i < n_bytes; i++){
-//      String_to_Int_List(str_split[i],dec_values[i]);
-//    }
+    int dec_values[n_bytes][8];
+    for (int i = 0; i < n_bytes; i++){
+      String_to_Int_List(str_split[i],dec_values[i]);
+    }
     
 
 
