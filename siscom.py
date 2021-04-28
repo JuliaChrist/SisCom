@@ -79,27 +79,24 @@ while(mensagem != "q"):
 	in_list = String_to_Int_List(String_to_Binary(mensagem))
 	Plot_Graph(in_list, "msg")
 
-	print("Entrada: ", mensagem)
-	print("Entrada em Binário: ",String_to_Binary(mensagem))
-	# print("Entrada em ASCII: ", String_to_ASCII_Dec(mensagem))
-	# print("Soma ASCII: ", Sum_Bytes(mensagem))
-	#Envia a mensagem para a serial
+	print("Entrada (ASCII): ", mensagem)
+	print("Entrada (Binário): ",String_to_Binary(mensagem))
+	print("Entrada (Decimal): ", String_to_ASCII_Dec(mensagem))
 
+	#Envia a mensagem para a serial
 	USB.write(mensagem.encode())
-	# print("N° de bytes enviados: ", USB.write(mensagem.encode()))
 
 	print("________________________________________\n")
 
 	#lê a serial
 	resposta = USB.readline().decode('ASCII').rstrip()
 
-	out_list = String_to_Int_List(resposta)
+	out_list = String_to_Int_List(String_to_Binary(resposta))
 	Plot_Graph(out_list, "rsp")
 
-	print("Resposta: ", Binary_to_ASCII(resposta))
-	print("Resposta em Binário: ", resposta)
-	# print("Resposta em ASCII: ", String_to_ASCII_Dec(Binary_to_ASCII(resposta)))
-	# print("Soma ASCII: ", Sum_Bytes(Binary_to_ASCII(resposta)), "\n")
+	print("Resposta (ASCII): ", resposta)
+	print("Resposta (Binário): ", String_to_Binary(resposta))
+	print("Resposta (Decimal): ", String_to_ASCII_Dec(resposta))
 
 	#mostra o valor em binário
 	# print("Soma Binário: ",format(sum_bytes(mensagem),'b'), "\n")

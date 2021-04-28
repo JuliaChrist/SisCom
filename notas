@@ -1,9 +1,20 @@
 Converter string binária para vetor de inteiros OK
 
-str split (?) -> separar em strings de 8 em 8 bits // NÃO PRECISA. vetor esta em int
+str split (?) -> separar em strings de 8 em 8 bits
+tenho um vetor de strings agora
 
-converter cada uma delas para o valor decimal
+
+converter cada elemento do vetor de strings para o valor decimal
 
 casting de um valor int para char = converte na ascii
 
 manda a string de volta pro pc
+
+
+
+
+
+"1000","0101"
+
+
+{[1,0,0,0],[0,1,0,1]}
