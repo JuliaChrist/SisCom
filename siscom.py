@@ -17,11 +17,24 @@ def String_to_Int_List (string):
 
 	return _list
 
+def Binary_to_Dec(string):
+	dec = String_to_Int_List(string)
+	exp = 1
+	for i in range (8,0):
+		aux += dec[i] * exp
+		exp = exp * 2
+	return aux
+
+
+
+
 def Binary_to_ASCII (string):
 	binary_int = int(string, 2)
 	byte_number = binary_int.bit_length() + 7 // 8
 	binary_array = binary_int.to_bytes(byte_number, "big")
 	return(binary_array.decode())
+
+
 
 def String_to_ASCII_Dec (string): #transforma a entrada em valores ASCII decimais correspondentes
 	return "".join(f"{ord(i)}" for i in string)
@@ -91,20 +104,38 @@ while(mensagem != "q"):
 	print("Entrada (Binário): ",String_to_Binary(mensagem))
 	print("Entrada (Decimal): ", String_to_ASCII_Dec(mensagem))
 
-	# mensagem = Insert_Checksum(mensagem)
 
-	teste = chr(Sum_Bytes(mensagem))
-	print("Soma: ", Sum_Bytes(mensagem))
 
-	print("SomaASCII: ", teste)
-	mensagem += teste
-	print("CHECKSUM: ", mensagem)
-	print("CHECKSUM: ", String_to_Binary(mensagem))
+#checksum
+	char_checksum = String_to_Binary(chr(Sum_Bytes(mensagem)))
+	print("soma bináriooooo: ", char_checksum)
+
+	char_checksum_inv = ""
+	for i in range (len(char_checksum)):
+		if char_checksum[i] == '1':
+			char_checksum_inv += '0'
+		else:
+			char_checksum_inv += '1'
+
+	print("soma binário invertidoooooo: ", char_checksum_inv)
+	char_checksum_list = String_to_Int_List(char_checksum_inv)
+	exp = 128
+	soma_bin = 0
+	for i in range (len(char_checksum_list)):
+		soma_bin += int(char_checksum_list[i] * exp)
+		exp = exp / 2
+
+	mensagem += chr(soma_bin)
+	print("Mensagem com CheckSum ASCII: ", String_to_ASCII_Dec(mensagem))
+	print("Mensagem com CheckSum: ", String_to_Binary(mensagem))
+#end checksum
+
+
+
 
 	in_list = String_to_Int_List(String_to_Binary(mensagem))
 	Plot_Graph(in_list, "msg")
 
-	# print("Soma char: ", teste.decode('ASCII'))
 	#Envia a mensagem para a serial
 	USB.write(mensagem.encode())
 
