@@ -6,10 +6,20 @@ from scipy import signal
 
 import serial
 
-def String_to_Binary (string): #transforma a entrada em valores bináros, sinal a ser transmitido. Codificação de linha NRZ Polar
+def String_to_Binary (string):
+	'''
+	Transforma um string de caracteres em uma string contendo seu equivalente em valor binário;
+	Recebe: String contendo a mensagem;
+	Retorna: string contendo o valor da menságem em binário.
+	'''
 	return "".join(f"{ord(i):08b}" for i in string)
 
 def String_to_Int_List (string):
+	'''
+	Converte uma string contendo um valor binário em uma lista de valores inteiros, de tamanho igual ao número de bits da mensagem contina na string;
+	Recebe: String com a mensagem em binário;
+	Retorna: Lista de inteiros.
+	'''
 	_list = []
 	# str_bin = toBinary(string)
 	for i in range (len(string)):
@@ -18,6 +28,11 @@ def String_to_Int_List (string):
 	return _list
 
 def Binary_to_Dec(string):
+	'''
+	Converte uma string contendo uma mensagem em binário em seu valor decimal correspondednte;
+	Recebe: String de valores em binário;
+	Retorna: Inteiro contendo o valor decimal.
+	'''
 	dec = String_to_Int_List(string)
 	exp = 1
 	for i in range (8,0):
@@ -25,18 +40,23 @@ def Binary_to_Dec(string):
 		exp = exp * 2
 	return aux
 
-
-
-
 def Binary_to_ASCII (string):
+	'''
+	Converte uma string contendo uma mensagem em binário em uma string com os characteres correspondentes da tabela ASCII;
+	Recebe: String com a mensagem em binário;
+	Retorna: String com os caracteres ASCII.
+	'''
 	binary_int = int(string, 2)
 	byte_number = binary_int.bit_length() + 7 // 8
 	binary_array = binary_int.to_bytes(byte_number, "big")
 	return(binary_array.decode())
 
-
-
-def String_to_ASCII_Dec (string): #transforma a entrada em valores ASCII decimais correspondentes
+def String_to_Dec (string):
+	'''
+	Converte uma string contendo uma mensagem em texto em seu valor decimal correspondente, caractere por caractere;
+	Recebe: String contendo mensagem em texto;
+	Retorna: String contendo decimais equivalentes
+	'''
 	return "".join(f"{ord(i)}" for i in string)
 
 def checksum (sum_mensagem,sum_resposta):
@@ -49,20 +69,53 @@ def checksum (sum_mensagem,sum_resposta):
 		return 0
 
 def Sum_Bytes (string): #soma o valor dos bytes da entrada
-# Independentemente da base numérica utilizada, as operações matemáticas aplicadas geram o mesmo resultado, portanto, a soma na base decimal resulta no mesmo 
-# valor que a soma na base binária.
-# Nessa aplicação, utilizamos a soma em decimal, pois é a base usada pela linguagem Python para as operações matemáticas.
+	'''
+	Soma os bytes da string de entrada;
+	Recebe: string contendo a mensagem;
+	Retorna: soma dos bytes da string, em inteiro.
+
+	Obs.: Independentemente da base numérica utilizada, as operações matemáticas aplicadas geram o mesmo resultado, portanto, 
+	a soma na base decimal resulta no mesmo valor que a soma na base binária. Nessa aplicação, utilizamos a soma em decimal,
+	pois é a base usada pela linguagem Python para as operações matemáticas.
+
+	'''
 	soma = 0
 	for i in range (len(string)):
-		soma = soma + int(String_to_ASCII_Dec(string[i]))
+		soma = soma + int(String_to_Dec(string[i]))
 	return soma
 
-def Insert_Checksum(String):
-	mensagem = str(Sum_Bytes(mensagem))
+def Insert_Checksum(string):
+	char_checksum = String_to_Binary(chr(Sum_Bytes(string)))
+	print("soma bináriooooo: ", char_checksum)
+
+	char_checksum_inv = ""
+	for i in range (len(char_checksum)):
+		if char_checksum[i] == '1':
+			char_checksum_inv += '0'
+		else:
+			char_checksum_inv += '1'
+
+	print("soma binário invertidoooooo: ", char_checksum_inv)
+	char_checksum_list = String_to_Int_List(char_checksum_inv)
+	exp = 128
+	soma_bin = 0
+	for i in range (len(char_checksum_list)):
+		soma_bin += int(char_checksum_list[i] * exp)
+		exp = exp / 2
+
+	string += chr(soma_bin)
+	print("Mensagem com CheckSum ASCII: ", String_to_Dec(string))
+	print("Mensagem com CheckSum: ", String_to_Binary(string))
+
+	return(string)
 
 
 
 def Plot_Graph (_list, sig):
+	'''
+	Plota o sinal em um gráfico;
+	Recebe: Lista com valores inteiros ; tipo de sinal (enviado ou recebido).
+	'''
 	prev = 0
 	graph = [] 
 	index = [0]
@@ -95,43 +148,16 @@ USB = serial.Serial('/dev/ttyACM0', 9600)
 #Limpa o buffer
 USB.flush()
 
-#Recebendo mensagem via terminal
+#Recebendo mensagem via terminal. O caractere 'q' encerra a aplicação.
 mensagem = input("Mensagem: ")
 
 while(mensagem != "q"):
 
 	print("Entrada (ASCII): ", mensagem)
 	print("Entrada (Binário): ",String_to_Binary(mensagem))
-	print("Entrada (Decimal): ", String_to_ASCII_Dec(mensagem))
+	print("Entrada (Decimal): ", String_to_Dec(mensagem))
 
-
-
-#checksum
-	char_checksum = String_to_Binary(chr(Sum_Bytes(mensagem)))
-	print("soma bináriooooo: ", char_checksum)
-
-	char_checksum_inv = ""
-	for i in range (len(char_checksum)):
-		if char_checksum[i] == '1':
-			char_checksum_inv += '0'
-		else:
-			char_checksum_inv += '1'
-
-	print("soma binário invertidoooooo: ", char_checksum_inv)
-	char_checksum_list = String_to_Int_List(char_checksum_inv)
-	exp = 128
-	soma_bin = 0
-	for i in range (len(char_checksum_list)):
-		soma_bin += int(char_checksum_list[i] * exp)
-		exp = exp / 2
-
-	mensagem += chr(soma_bin)
-	print("Mensagem com CheckSum ASCII: ", String_to_ASCII_Dec(mensagem))
-	print("Mensagem com CheckSum: ", String_to_Binary(mensagem))
-#end checksum
-
-
-
+	mensagem = Insert_Checksum(mensagem)
 
 	in_list = String_to_Int_List(String_to_Binary(mensagem))
 	Plot_Graph(in_list, "msg")
@@ -141,8 +167,7 @@ while(mensagem != "q"):
 
 	print("________________________________________\n")
 
-	#lê a serial
-
+	#Lê a serial
 	batata = USB.readline()#.decode('ASCII').rstrip()
 	resposta = str(batata , 'utf-8')
 	resposta = resposta.rstrip()
@@ -153,7 +178,7 @@ while(mensagem != "q"):
 
 	print("Resposta (ASCII): ", resposta)
 	print("Resposta (Binário): ", String_to_Binary(resposta))
-	print("Resposta (Decimal): ", String_to_ASCII_Dec(resposta))
+	print("Resposta (Decimal): ", String_to_Dec(resposta))
 
 	#mostra o valor em binário
 	# print("Soma Binário: ",format(sum_bytes(mensagem),'b'), "\n")
@@ -163,9 +188,10 @@ while(mensagem != "q"):
 	# else:
 	# 	print("Checksum NOT OK\n")
 		
-	USB.flush()
+	
 	plt.tight_layout()
 	plt.show()
 
+	USB.flush()
 	mensagem = input("Mensagem: ")
 
