@@ -6,3 +6,10 @@ while len > 8:
 picota de 8 em 8 (o ultimo pode ter menos)
 soma novamente
 função recursiva (eu acho)
+
+
+
+
+
+	#mostra o valor em binário (sem salvar em string)
+	# print("Soma Binário: ",format(sum_bytes(mensagem),'b'), "\n")
