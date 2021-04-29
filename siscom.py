@@ -48,9 +48,14 @@ def Binary_to_ASCII (string):
 	Retorna: String com os caracteres ASCII.
 	'''
 	binary_int = int(string, 2)
-	byte_number = binary_int.bit_length() + 7 // 8
-	binary_array = binary_int.to_bytes(byte_number, "big")
-	return(binary_array.decode())
+
+	# print("binRY INT ",binary_int)
+	# print("char binRY INT ",chr(binary_int))
+	# byte_number = binary_int.bit_length() + 7 // 8
+	# binary_array = binary_int.to_bytes(byte_number, "big")
+	# # return(binary_array.decode())
+	# return(str(binary_array , 'utf-8'))
+	return (chr(binary_int))	
 
 def String_to_Dec (string):
 	'''
@@ -72,19 +77,57 @@ def Sum_Bytes (string): #OK
 
 	'''
 	soma = 0
+	# print("tamanho" , len(string))
 	for i in range (len(string)):
+		# print("STR" , string[i])
+		# print("STR TO DEC" , String_to_Dec(string[i]))
+
 		soma = soma + int(String_to_Dec(string[i]))
 	soma_bin = String_to_Binary(chr(soma))
 	return soma_bin
 
 def Format_Sum_Bytes(string):
 
-	while(len(soma_bin) > 8): #valor da soma tem mais de 8 bits em binario
+	while(len(string) > 8): #valor da soma tem mais de 8 bits em binario
 		#repartir string de 8 em 8 e somar de novo
-		while ((len(soma_bin) % 8) != 0): # enquanto o numero de bits não é multiplo de 8
+		while ((len(string) % 8) != 0): # enquanto o numero de bits não é multiplo de 8
 		 	#completar com zeros no inicio da string (dígitos menos significativos)
-		 	soma_bin = '0' + soma_bin
-		print("soma_bin : ", soma_bin)
+		 	string = '0' + string
+			#até aqui ta OK
+		print(string)
+
+		# print("CARALHO",chr(int(string, 2)))
+		#separar em dois char
+		# print("CARALHO 2",Sum_Bytes(string))
+
+		#DIVIDIR A STRING E SOMAR DE NOVO
+		count = 0
+		str_split = ""
+		str_aux = ""
+		print("tamanho ",len(string))
+		for i in range (0,len(string),8):
+
+			for j in range (i, i+8):
+				str_aux += string[j]
+			# print(str_split[count])
+			# count += 1
+			print("auxiliarr  ",str_aux)
+			print("auxiliarr ASCII ",Binary_to_ASCII(str_aux))
+			str_split += Binary_to_ASCII(str_aux)
+			print("CARALHO 1",(str_split))
+			str_aux = ""
+				# print(string[j])
+
+
+		print("CARALHO",(str_split))
+		# print("CARALHO 2",Sum_Bytes(Binary_to_ASCII(string)))
+		string = (Format_Sum_Bytes(Sum_Bytes(str_split)))
+
+		print("FORMAT",(string))
+	return string
+
+	
+    
 
 def Insert_Sum(string):
 	'''
@@ -92,7 +135,10 @@ def Insert_Sum(string):
 	Recebe: string contendo a mensagem
 	Retorna: string com a mensagem + soma;
 	'''
-	char_checksum = String_to_Binary(chr(Sum_Bytes(string)))
+
+	#ACHO QUE TA CERTO
+
+	char_checksum = (Format_Sum_Bytes(Sum_Bytes(string)))
 	# print("soma binário: ", char_checksum)
 
 	char_checksum_inv = ""
@@ -128,10 +174,14 @@ def Checksum (mensagem):
 	print("SOMA MENSAGEM",(Sum_Bytes(mensagem)))
 	#MUDAR AQUI... LOOP PERCORRENDO STRING CHECANDO SE TUDO É 1
 	binary_sum = Sum_Bytes(mensagem)
-	if (((Sum_Bytes(mensagem))) == 255): # dec(11111111) = 255
-		print("\n_ _ _ _ _ CHECKSUM OK! Mensagem recebida sem erro(s) _ _ _ _ _\n")
-	else:
-		print("\n_ _ _ _ _ CHECKSUM NOK! Mensagem recebida com erro(s) _ _ _ _ _\n")	
+	for i in range (len(binary_sum)):
+		if (binary_sum[i] == '0'): # dec(11111111) = 255
+			print("\n_ _ _ _ _ CHECKSUM NOK! Mensagem recebida com erro(s) _ _ _ _ _\n")
+			return -1
+
+	print("\n_ _ _ _ _ CHECKSUM OK! Mensagem recebida sem erro(s) _ _ _ _ _\n")
+
+				
 
 def Plot_Graph (_list, sig):
 	'''
@@ -180,7 +230,8 @@ while(mensagem != "q"):
 	print("Mensagem (Binário): ",String_to_Binary(mensagem))
 	print("Mensagem (Decimal): ", String_to_Dec(mensagem))
 	print("Mensagem (sum_bytes): ", Sum_Bytes(mensagem))
-	# mensagem = Insert_Sum(mensagem)
+	print("Mensagem (format_sum_bytes): ", Format_Sum_Bytes(Sum_Bytes(mensagem)))
+	mensagem = Insert_Sum(mensagem)
 
 	in_list = String_to_Int_List(String_to_Binary(mensagem))
 	Plot_Graph(in_list, "msg")
@@ -207,14 +258,15 @@ while(mensagem != "q"):
 	print("Resposta (Decimal checksum): ", String_to_Dec(resposta))
 	# print("Resposta Soma: ", soma)
 
-	# Checksum(resposta)
+	Checksum(resposta)
 
 	#mostra o valor em binário (sem salvar em string)
 	# print("Soma Binário: ",format(sum_bytes(mensagem),'b'), "\n")
 	
 	plt.tight_layout()
-	plt.show()
+	# plt.show()
 
 	USB.flush()
+	print("________________________________________________________________\n")
 	mensagem = input("\nMensagem: ")
 
