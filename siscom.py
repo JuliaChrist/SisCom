@@ -172,8 +172,9 @@ def Checksum (mensagem):
 	'''
 	print("MENSAGEM",((mensagem)))
 	print("SOMA MENSAGEM",(Sum_Bytes(mensagem)))
+	print("SOMA MENSAGEM FORMATADA", Format_Sum_Bytes(Sum_Bytes(mensagem)))
 	#MUDAR AQUI... LOOP PERCORRENDO STRING CHECANDO SE TUDO É 1
-	binary_sum = Sum_Bytes(mensagem)
+	binary_sum = Format_Sum_Bytes(Sum_Bytes(mensagem))
 	for i in range (len(binary_sum)):
 		if (binary_sum[i] == '0'): # dec(11111111) = 255
 			print("\n_ _ _ _ _ CHECKSUM NOK! Mensagem recebida com erro(s) _ _ _ _ _\n")
@@ -230,7 +231,7 @@ while(mensagem != "q"):
 	print("Mensagem (Binário): ",String_to_Binary(mensagem))
 	print("Mensagem (Decimal): ", String_to_Dec(mensagem))
 	print("Mensagem (sum_bytes): ", Sum_Bytes(mensagem))
-	print("Mensagem (format_sum_bytes): ", Format_Sum_Bytes(Sum_Bytes(mensagem)))
+	# print("Mensagem (format_sum_bytes): ", Format_Sum_Bytes(Sum_Bytes(mensagem)))
 	mensagem = Insert_Sum(mensagem)
 
 	in_list = String_to_Int_List(String_to_Binary(mensagem))

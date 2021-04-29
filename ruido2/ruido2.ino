@@ -52,7 +52,7 @@ void loop() {
     str = ASCII_to_Binary(mensagem);
     int n_bytes = (str.length())/8;
 //    Serial.println(n_bytes);
-//    str = Insert_Noise(str);
+    str = Insert_Noise(str);
 //    Serial.println(str);
 
     /*Separa a string de 8 em 8 bits em um vetor de strings. Cada elemento do vetor contém a string com o valor binário do respectivo byte*/
