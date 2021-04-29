@@ -33,12 +33,13 @@ def Binary_to_Dec(string):
 	Recebe: String de valores em binário;
 	Retorna: Inteiro contendo o valor decimal.
 	'''
+	global aux
 	dec = String_to_Int_List(string)
-	exp = 1
-	for i in range (8,0):
+	exp = 128
+	for i in range ((len(dec) - 8), len(dec)):
 		aux += dec[i] * exp
-		exp = exp * 2
-	return aux
+		exp = exp / 2
+	return int(aux)
 
 def Binary_to_ASCII (string):
 	'''
@@ -59,7 +60,7 @@ def String_to_Dec (string):
 	'''
 	return "".join(f"{ord(i)}" for i in string)
 
-def Sum_Bytes (string): #soma o valor dos bytes da entrada
+def Sum_Bytes (string):
 	'''
 	Soma os bytes da string de entrada;
 	Recebe: string contendo a mensagem;
@@ -76,6 +77,11 @@ def Sum_Bytes (string): #soma o valor dos bytes da entrada
 	return soma
 
 def Insert_Sum(string):
+	'''
+	Insere o inverso (binário) da soma dos bits da mensagem. Usado no método CheckSum;
+	Recebe: string contendo a mensagem
+	Retorna: string com a mensagem + soma;
+	'''
 	char_checksum = String_to_Binary(chr(Sum_Bytes(string)))
 	# print("soma binário: ", char_checksum)
 
@@ -101,11 +107,14 @@ def Insert_Sum(string):
 	return(string)
 
 def Checksum (mensagem,soma):
-	# Independentemente da base numérica utilizada, as operações matemáticas aplicadas geram o mesmo resultado, portanto, a soma na base decimal resulta no mesmo 
-	# valor que a soma na base binária.
-	# Nessa aplicação, utilizamos a soma em decimal, pois é a base usada pela linguagem Python para as operações matemáticas.
+	'''
+	Confere se ocorreu algum erro na transmissão da mensagem (método de detecção de erros CheckSum) e 
+	imprime na tela uma mensagem com o resultado do teste;
+	
+	Recebe: mensagem recebida, soma recebida
 
-	if ((Sum_Bytes(mensagem)) == (Sum_Bytes(soma))):
+	'''
+	if (((Sum_Bytes(mensagem)) + (Sum_Bytes(soma))) == 255):
 		print("\n_ _ _ _ _ CHECKSUM OK! Mensagem recebida sem erro(s) _ _ _ _ _\n")
 	else:
 		print("\n_ _ _ _ _ CHECKSUM NOK! Mensagem recebida com erro(s) _ _ _ _ _\n")	
@@ -151,6 +160,7 @@ USB.flush()
 mensagem = input("Mensagem: ")
 
 while(mensagem != "q"):
+	aux = 0
 
 	# print("Entrada (ASCII): ", mensagem)
 	print("Mensagem (Binário): ",String_to_Binary(mensagem))
