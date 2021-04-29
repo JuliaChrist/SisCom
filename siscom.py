@@ -114,7 +114,7 @@ def Checksum (mensagem,soma):
 	Recebe: mensagem recebida, soma recebida
 
 	'''
-	if (((Sum_Bytes(mensagem)) + (Sum_Bytes(soma))) == 255):
+	if (((Sum_Bytes(mensagem)) + (Sum_Bytes(soma))) == 255): # dec(11111111) = 255
 		print("\n_ _ _ _ _ CHECKSUM OK! Mensagem recebida sem erro(s) _ _ _ _ _\n")
 	else:
 		print("\n_ _ _ _ _ CHECKSUM NOK! Mensagem recebida com erro(s) _ _ _ _ _\n")	
