@@ -30,11 +30,10 @@ void String_to_Int_List(String str, int *int_list){
 //  Serial.println("");
 }
 
-/*Insere o ruído no sinal*/
+/*INsere o ruído no sinal*/
 //TA OK, NÃO MEXER
 String Insert_Noise(String str){
-  int noise = random(0,str.length() - 8); //PARA TIRAR OS BITS DO CHECKSUM
-//  int noise = random(0,str.length()); //SEM CHECKSUM
+  int noise = random(0,str.length());
     if(str.charAt(noise) == '1'){
       str.setCharAt(noise, '0');
     }else{
@@ -53,7 +52,7 @@ void loop() {
     str = ASCII_to_Binary(mensagem);
     int n_bytes = (str.length())/8;
 //    Serial.println(n_bytes);
-//    str = Insert/_Noise(str);
+//    str = Insert_Noise(str);
 //    Serial.println(str);
 
     /*Separa a string de 8 em 8 bits em um vetor de strings. Cada elemento do vetor contém a string com o valor binário do respectivo byte*/

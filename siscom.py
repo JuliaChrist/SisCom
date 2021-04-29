@@ -60,7 +60,7 @@ def String_to_Dec (string):
 	'''
 	return "".join(f"{ord(i)}" for i in string)
 
-def Sum_Bytes (string):
+def Sum_Bytes (string): #OK
 	'''
 	Soma os bytes da string de entrada;
 	Recebe: string contendo a mensagem;
@@ -74,7 +74,17 @@ def Sum_Bytes (string):
 	soma = 0
 	for i in range (len(string)):
 		soma = soma + int(String_to_Dec(string[i]))
-	return soma
+	soma_bin = String_to_Binary(chr(soma))
+	return soma_bin
+
+def Format_Sum_Bytes(string):
+
+	while(len(soma_bin) > 8): #valor da soma tem mais de 8 bits em binario
+		#repartir string de 8 em 8 e somar de novo
+		while ((len(soma_bin) % 8) != 0): # enquanto o numero de bits não é multiplo de 8
+		 	#completar com zeros no inicio da string (dígitos menos significativos)
+		 	soma_bin = '0' + soma_bin
+		print("soma_bin : ", soma_bin)
 
 def Insert_Sum(string):
 	'''
@@ -106,7 +116,7 @@ def Insert_Sum(string):
 
 	return(string)
 
-def Checksum (mensagem,soma):
+def Checksum (mensagem):
 	'''
 	Confere se ocorreu algum erro na transmissão da mensagem (método de detecção de erros CheckSum) e 
 	imprime na tela uma mensagem com o resultado do teste;
@@ -114,7 +124,11 @@ def Checksum (mensagem,soma):
 	Recebe: mensagem recebida, soma recebida
 
 	'''
-	if (((Sum_Bytes(mensagem)) + (Sum_Bytes(soma))) == 255): # dec(11111111) = 255
+	print("MENSAGEM",((mensagem)))
+	print("SOMA MENSAGEM",(Sum_Bytes(mensagem)))
+	#MUDAR AQUI... LOOP PERCORRENDO STRING CHECANDO SE TUDO É 1
+	binary_sum = Sum_Bytes(mensagem)
+	if (((Sum_Bytes(mensagem))) == 255): # dec(11111111) = 255
 		print("\n_ _ _ _ _ CHECKSUM OK! Mensagem recebida sem erro(s) _ _ _ _ _\n")
 	else:
 		print("\n_ _ _ _ _ CHECKSUM NOK! Mensagem recebida com erro(s) _ _ _ _ _\n")	
@@ -164,9 +178,9 @@ while(mensagem != "q"):
 
 	# print("Entrada (ASCII): ", mensagem)
 	print("Mensagem (Binário): ",String_to_Binary(mensagem))
-	# print("Entrada (Decimal): ", String_to_Dec(mensagem))
-
-	mensagem = Insert_Sum(mensagem)
+	print("Mensagem (Decimal): ", String_to_Dec(mensagem))
+	print("Mensagem (sum_bytes): ", Sum_Bytes(mensagem))
+	# mensagem = Insert_Sum(mensagem)
 
 	in_list = String_to_Int_List(String_to_Binary(mensagem))
 	Plot_Graph(in_list, "msg")
@@ -189,10 +203,11 @@ while(mensagem != "q"):
 
 	print("Resposta (ASCII): ", resp_mensagem)
 	print("Resposta (Binário): ", String_to_Binary(resp_mensagem))
-	# print("Resposta (Decimal): ", String_to_Dec(resp_mensagem))
+	print("Mensagem (c/ CheckSum): ", String_to_Binary(resposta))
+	print("Resposta (Decimal checksum): ", String_to_Dec(resposta))
 	# print("Resposta Soma: ", soma)
 
-	Checksum(resp_mensagem, soma)
+	# Checksum(resposta)
 
 	#mostra o valor em binário (sem salvar em string)
 	# print("Soma Binário: ",format(sum_bytes(mensagem),'b'), "\n")
@@ -201,5 +216,5 @@ while(mensagem != "q"):
 	plt.show()
 
 	USB.flush()
-	mensagem = input("Mensagem: ")
+	mensagem = input("\nMensagem: ")
 

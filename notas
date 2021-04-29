@@ -1,1 +1,8 @@
 MUDAR ARDUINO PARA NÃO TROCAR BITS DA SOMA
+
+
+while len > 8:
+
+picota de 8 em 8 (o ultimo pode ter menos)
+soma novamente
+função recursiva (eu acho)
