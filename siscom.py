@@ -59,15 +59,6 @@ def String_to_Dec (string):
 	'''
 	return "".join(f"{ord(i)}" for i in string)
 
-def checksum (sum_mensagem,sum_resposta):
-	# Independentemente da base numérica utilizada, as operações matemáticas aplicadas geram o mesmo resultado, portanto, a soma na base decimal resulta no mesmo 
-	# valor que a soma na base binária.
-	# Nessa aplicação, utilizamos a soma em decimal, pois é a base usada pela linguagem Python para as operações matemáticas.
-	if sum_mensagem == sum_resposta:
-		return 1
-	else:
-		return 0
-
 def Sum_Bytes (string): #soma o valor dos bytes da entrada
 	'''
 	Soma os bytes da string de entrada;
@@ -84,9 +75,9 @@ def Sum_Bytes (string): #soma o valor dos bytes da entrada
 		soma = soma + int(String_to_Dec(string[i]))
 	return soma
 
-def Insert_Checksum(string):
+def Insert_Sum(string):
 	char_checksum = String_to_Binary(chr(Sum_Bytes(string)))
-	print("soma bináriooooo: ", char_checksum)
+	# print("soma binário: ", char_checksum)
 
 	char_checksum_inv = ""
 	for i in range (len(char_checksum)):
@@ -95,7 +86,7 @@ def Insert_Checksum(string):
 		else:
 			char_checksum_inv += '1'
 
-	print("soma binário invertidoooooo: ", char_checksum_inv)
+	# print("soma binário invertido: ", char_checksum_inv)
 	char_checksum_list = String_to_Int_List(char_checksum_inv)
 	exp = 128
 	soma_bin = 0
@@ -104,12 +95,20 @@ def Insert_Checksum(string):
 		exp = exp / 2
 
 	string += chr(soma_bin)
-	print("Mensagem com CheckSum ASCII: ", String_to_Dec(string))
-	print("Mensagem com CheckSum: ", String_to_Binary(string))
+	# print("Mensagem com CheckSum ASCII: ", String_to_Dec(string))
+	print("Mensagem (c/ CheckSum): ", String_to_Binary(string))
 
 	return(string)
 
+def Checksum (mensagem,soma):
+	# Independentemente da base numérica utilizada, as operações matemáticas aplicadas geram o mesmo resultado, portanto, a soma na base decimal resulta no mesmo 
+	# valor que a soma na base binária.
+	# Nessa aplicação, utilizamos a soma em decimal, pois é a base usada pela linguagem Python para as operações matemáticas.
 
+	if ((Sum_Bytes(mensagem)) == (Sum_Bytes(soma))):
+		print("\n_ _ _ _ _ CHECKSUM OK! Mensagem recebida sem erro(s) _ _ _ _ _\n")
+	else:
+		print("\n_ _ _ _ _ CHECKSUM NOK! Mensagem recebida com erro(s) _ _ _ _ _\n")	
 
 def Plot_Graph (_list, sig):
 	'''
@@ -153,11 +152,11 @@ mensagem = input("Mensagem: ")
 
 while(mensagem != "q"):
 
-	print("Entrada (ASCII): ", mensagem)
-	print("Entrada (Binário): ",String_to_Binary(mensagem))
-	print("Entrada (Decimal): ", String_to_Dec(mensagem))
+	# print("Entrada (ASCII): ", mensagem)
+	print("Mensagem (Binário): ",String_to_Binary(mensagem))
+	# print("Entrada (Decimal): ", String_to_Dec(mensagem))
 
-	mensagem = Insert_Checksum(mensagem)
+	mensagem = Insert_Sum(mensagem)
 
 	in_list = String_to_Int_List(String_to_Binary(mensagem))
 	Plot_Graph(in_list, "msg")
@@ -165,29 +164,28 @@ while(mensagem != "q"):
 	#Envia a mensagem para a serial
 	USB.write(mensagem.encode())
 
-	print("________________________________________\n")
+	print("_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n")
 
 	#Lê a serial
 	batata = USB.readline()#.decode('ASCII').rstrip()
 	resposta = str(batata , 'utf-8')
 	resposta = resposta.rstrip()
-	print(resposta)
 
 	out_list = String_to_Int_List(String_to_Binary(resposta))
 	Plot_Graph(out_list, "rsp")
 
-	print("Resposta (ASCII): ", resposta)
-	print("Resposta (Binário): ", String_to_Binary(resposta))
-	print("Resposta (Decimal): ", String_to_Dec(resposta))
+	soma = resposta[-1::]
+	resp_mensagem = resposta[:-1]
 
-	#mostra o valor em binário
+	print("Resposta (ASCII): ", resp_mensagem)
+	print("Resposta (Binário): ", String_to_Binary(resp_mensagem))
+	# print("Resposta (Decimal): ", String_to_Dec(resp_mensagem))
+	# print("Resposta Soma: ", soma)
+
+	Checksum(resp_mensagem, soma)
+
+	#mostra o valor em binário (sem salvar em string)
 	# print("Soma Binário: ",format(sum_bytes(mensagem),'b'), "\n")
-
-	# if (checksum(Sum_Bytes(mensagem),Sum_Bytes(resposta))):
-	# 	print("Checksum OK\n")
-	# else:
-	# 	print("Checksum NOT OK\n")
-		
 	
 	plt.tight_layout()
 	plt.show()
